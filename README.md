@@ -66,14 +66,19 @@ Molecular surface represented by triangular surfaces are
 generated from atomic coordinates by MSMS program written by Michel F. Sanner. 
 Binaries can be downloaded from http://mgltools.scripps.edu/downloads#msms
 
-MSMS accepts xyzr format which can be generated from a PDB file.
-```pdb_to_xyzr``` is a part of MSMS binary distribution and requires another
-file ```atmtypenumbers```. Note that ```pdb_to_xyzr``` and 
-```atmtypenumbers``` should be in the same directory and 
-accessible from your working directory.
+MSMS accepts atomic coordinates as xyzr format 
+which can be generated from a PDB file by an Awk script ```pdb_to_xyzr```.
+The ```pdb_to_xyzr``` is a part of MSMS binary distribution and 
+requires another file ```atmtypenumbers```. 
+Note that ```atmtypenumbers``` should be in the current working directory.
 
 ```
-$ pdb_to_xyzr a.pdb | awk '{print $1,$2,$3,$4+1.1}' > a.xyzr
+$ chmod +x msms.i86Linux2.2.6.1
+$ chmod +x pdb_to_xyzr
+$ pdb_to_xyzr 1UBQ.pdb | awk '{print $1,$2,$3,$4+1.1}' > 1UBQ.xyzr
+$ msms.i86Linux2.2.6.1 -density 1 -if 1UBQ.xyzr -of 1UBQ >& msms.log
+$ ls 1UBQ.*
+  1UBQ.face 1UBQ.pdb 1UBQ.vert 1UBQ.xyzr
 ```
 
 Here, we added 1.1 angstrom to the van der Waals radii to account for the 
@@ -81,58 +86,60 @@ hydration shell, which is commonly adopted practice in the shaped based calculat
 of hydrodynamic properties to make the calculation agree to the experimental
 measurements.
 
-Execution of the following command would result in two files, ```a.vert``` and ```a.face```.
-
-```
-$ msms.i86Linux2.2.6.1 -density 1 -if a.xyzr -of a >& msms.log
-```
-
 BE2 accepts MSMS, GTS, and OFF format files. 
 You can use the MSMS outputs (.vert and .face files) directly 
 or convert them into equivalent or coarsened surfaces in the GTS format.
+In the above ubiquitin example (PDBId: 1UBQ), MSMS would generate 
+7970 triangular faces and 3987 vertices.
 
-BE2 performs matrix inversions and it may take a long time if the number of faces,
-and therefore the size of matrix is more than necessarily large.
-It depends on the size and shape of the molecule of interest,
-but normally 800-2400 faces are good enough. However, best practice would be
-generating a series of GTS format files with varying number of faces and
-run each of them, and extrapolate to an infinite number of faces.
+In BE2, these triangular faces or boundary elements are handled by a matrix 
+of 3*face columns and 3*face rows. BE2 calculation needs matrix inversion
+and it may take a while for a big matrix. So, it would be sensible to reduce
+the matrix size as long as the accuracy is not compromised severely.
+
+The number of faces or elements depends on the size and shape complexitiy of 
+the molecule of interest, but normally 800-2400 faces are good enough. 
+However, best practice is to generate a series of surfaces with 
+varying number of faces and run each of them, and extrapolate the results
+to an infinite number of faces.
+
+msms2gts serves this purpose. It reads MSMS output (.vert and .face files)
+and coarsen it to a desired number of faces.
 
 ```
-$ msms2gts a 1600
+$ msms2gts 1UBQ 800
+$ ls 1UBQ.*
+  1UBQ.0800.gts 1UBQ.face 1UBQ.pdb 1UBQ.vert 1UBQ.xyzr
 ```
-
-This will read a.vert and a.face and coarsen the triangular surfaces down to 1600 faces
-and save to a.gts.
 
 ### Calculate diffusion tensors
 
+BE2 reads MSMS, GTS, or OFF format files and calculates translational and diffusion tensors.
+
 ```
-$ be2 -gts a > a.out
+$ be2 -gts 1UBQ > 1UBQ.0800.out
 ```
 
-BE2 reads MSMS, GTS, or OFF format files and calculates translational and diffusion tensors.
 The output will be like:
 ```
-GTS_surface  : 1NWK.1200.gts (Vertex: 600 Edge: 1800 Face: 1200)
-Dimension    : X   75.9305  Y   53.2333 Z   59.3743
 Temperature  : 293.15 K
 Viscosity    : 1.002 cP
-Calculating G matrix (3600 x 3600) ...... time 00:00:38
-Inverting   G matrix (3600 x 3600) ...... time 00:10:01
-Surface_Area (  0.774144 ...  35.811728) Sum= 13233.6 A^2
-Center_Of_Diffusion (   8.6754,  -0.5887,  21.3645)
+GTS_surface  : 1UBQ.0800.gts (Vertex: 402 Edge: 1200 Face: 800)
+Dimension    : X   36.4160  Y   36.9787 Z   42.1620
+Calculating G matrix (2400 x 2400) ...... time 00:00:21
+Inverting   G matrix (2400 x 2400) ...... time 00:01:19
+Surface_Area (  0.534108 ...  12.356632) Sum= 4142.26 A^2
 
-Eigenvalue (10^-7 cm^2 s^-1) & Eigenvector of Dtt
-1      7.102 | -1.982e-01 -7.904e-01  5.796e-01
-2      7.723 | -2.844e-01  6.123e-01  7.377e-01
-3      7.936 | -9.380e-01 -1.860e-02 -3.461e-01
-
-Eigenvalue (10^7 s^-1) & Eigenvector of Drr
-1      0.564 | -2.109e-01 -7.994e-01  5.626e-01
-2      0.664 | -3.129e-01  6.005e-01  7.359e-01
-3      0.777 |  9.261e-01  2.088e-02  3.768e-01
-# 1/(6Diso)  24.932 ns
+Center_of_Diffusion 30.7833 29.5617 16.6655
+Dtt Eigenvalues (10^-7 cm^2 s^-1) | Eigenvectors
+Dtt 1     12.281 |  8.377e-01 -2.428e-01 -4.891e-01
+Dtt 2     12.527 | -4.117e-04 -8.960e-01  4.441e-01
+Dtt 3     13.394 |  5.461e-01  3.719e-01  7.507e-01
+Drr Eigenvalues (10^7 s^-1) | Eigenvectors
+Drr 1      2.773 |  8.158e-01 -4.130e-01 -4.049e-01
+Drr 2      2.890 | -1.374e-01 -8.184e-01  5.580e-01
+Drr 3      4.009 |  5.618e-01  3.995e-01  7.244e-01
+# rigid 1/(6Diso)   5.170 ns
 ```
 
 How to run for disordered ensemble?
