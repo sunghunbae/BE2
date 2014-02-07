@@ -169,17 +169,18 @@ The disordered or unstructured proteins have one or more part(s) or domain(s)
 that remain unstable and are constantly changing their conformations 
 so that overall molecular shape fluctuates over time.
 
-The BE2 approach focuses on one rigid domain at a time. 
+BE2 approach focuses on one rigid domain at a time.
 However, it does not mean that BE2 is limited to proteins with only one rigid domain. 
 For proteins with multiple rigid domains linked by some disordered linker(s), the 
-diffusion tensor of each rigid domain is separately calculated individually by BE2.
+diffusion tensor of each rigid domain can be separately calculated.
 
 A set of structures or ensemble describes the disordered proteins.
-There are many different ways to generate a realistic ensemble structures.
-You may use your own ensemble structures if you have.
-But if you don't have a tool to generate the ensemble, you can use ```eg```.
-eg randomly selects dihedral angles from a pre-compiled residue-specific phi,psi,chi library.
-This library was made from 500 high-resolution x-ray structures and 
+There are many ways to generate a realistic ensemble structures.
+You may use your own ensemble structures or use ```eg``` to generate one.
+```eg``` generates structures by selecting and applying 
+dihedral angles selected randomly from a pre-compiled residue-specific phi-psi-chi library.
+This library was made from 500 high-resolution x-ray structures after excluding helices, strands,
+and turns
 
 rest of the molecule retain their rigid structure. The rigid domain
 can be a stretch of amino acid sequence forming a stable fold or 
