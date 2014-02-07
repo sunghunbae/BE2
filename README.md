@@ -149,23 +149,53 @@ Drr 3      4.009 |  5.618e-01  3.995e-01  7.244e-01
 
 BE2 is practically accurate!!
 
-| PDB  | BE2  | Exp | PDB | BE2   | Exp  | PDB  |  BE2  |  Exp | PDB |  BE2   |  Exp  |
-|------|------|-----|-----|-------|------|------|-------|------|-----|--------|-------|
-| 1ZNF | 2.00 | 2.4 |2CDS | 7.91  | 8.3  | 6I1B | 11.06 | 12.4 |1NWK | 25.18  | 24.5  |
-| 5PTI | 4.25 | 4.0 |2CDS | 7.91  | 9.8  | 1LKI | 11.76 | 14.9 |1GKB | 31.66  | 32.7  |
-| 1PIT | 4.38 | 4.4 |1HFX | 8.13  | 8.9  | 1TPO | 12.16 | 14.4 |1HHO | 33.53  | 29.8  |
-| 2BCA | 4.52 | 5.1 |1PNE | 8.41  | 6.7  | 1SVN | 12.69 | 12.4 |2HHB | 34.74  | 32.7  |
-| 1CLB | 4.87 | 4.9 |7RSA | 8.70  | 8.3  | 1BVG | 12.73 | 13.2 |1AO6 | 48.90  | 47.6  |
-| 1UBQ | 5.20 | 5.4 |1E8L | 8.77  | 8.3  | 2CGA | 13.97 | 13.9 |1ALK | 53.14  | 53.8  |
-| 1BTA | 5.60 | 7.4 |1MBO | 10.08 | 10.0 | 2CAB | 15.08 | 15.4 |2CTV | 60.77  | 59.5  |
-| 1EGL | 5.70 | 6.2 |3BLG | 10.14 | 10.4 | 4PEP | 19.65 | 17.8 |6LDH | 85.97  | 83.3  |
-| 1HRC | 6.65 | 6.9 |1AVU | 10.79 | 12.6 | 1BEB | 22.93 | 21.9 |1GPB | 125.08 | 128.2 |
-| 2CDS | 7.91 | 7.6 |1WRT | 23.51 | 23.1 |
+| PDB  | BE2 | Exp | PDB | BE2  | Exp  | PDB  |  BE2 |  Exp | PDB |  BE2  |  Exp  |
+|------|-----|-----|-----|------|------|------|------|------|-----|-------|-------|
+| 1ZNF | 2.0 | 2.4 |2CDS | 7.9  | 8.3  | 6I1B | 11.1 | 12.4 |1NWK | 25.2  | 24.5  |
+| 5PTI | 4.3 | 4.0 |2CDS | 7.9  | 9.8  | 1LKI | 11.8 | 14.9 |1GKB | 31.7  | 32.7  |
+| 1PIT | 4.4 | 4.4 |1HFX | 8.1  | 8.9  | 1TPO | 12.2 | 14.4 |1HHO | 33.5  | 29.8  |
+| 2BCA | 4.5 | 5.1 |1PNE | 8.4  | 6.7  | 1SVN | 12.7 | 12.4 |2HHB | 34.7  | 32.7  |
+| 1CLB | 4.9 | 4.9 |7RSA | 8.7  | 8.3  | 1BVG | 12.7 | 13.2 |1AO6 | 48.9  | 47.6  |
+| 1UBQ | 5.2 | 5.4 |1E8L | 8.8  | 8.3  | 2CGA | 14.0 | 13.9 |1ALK | 53.1  | 53.8  |
+| 1BTA | 5.6 | 7.4 |1MBO | 10.1 | 10.0 | 2CAB | 15.1 | 15.4 |2CTV | 60.8  | 59.5  |
+| 1EGL | 5.7 | 6.2 |3BLG | 10.1 | 10.4 | 4PEP | 19.7 | 17.8 |6LDH | 86.0  | 83.3  |
+| 1HRC | 6.7 | 6.9 |1AVU | 10.8 | 12.6 | 1BEB | 22.9 | 21.9 |1GPB | 125.1 | 128.2 |
+| 2CDS | 7.9 | 7.6 |1WRT | 23.5 | 23.1 |
 
-How to run for disordered ensemble?
-===================================
+How to run for disordered proteins?
+====================================
+
+The disordered or unstructured proteins have one or more part(s) or domain(s)
+that remain unstable and are constantly changing their conformations 
+so that overall molecular shape fluctuates over time.
+
+The BE2 approach focuses on one rigid domain at a time. 
+However, it does not mean that BE2 is limited to proteins with only one rigid domain. 
+For proteins with multiple rigid domains linked by some disordered linker(s), the 
+diffusion tensor of each rigid domain is separately calculated individually by BE2.
+
+A set of structures or ensemble describes the disordered proteins.
+There are many different ways to generate a realistic ensemble structures.
+You may use your own ensemble structures if you have.
+But if you don't have a tool to generate the ensemble, you can use ```eg```.
+eg randomly selects dihedral angles from a pre-compiled residue-specific phi,psi,chi library.
+This library was made from 500 high-resolution x-ray structures and 
+
+rest of the molecule retain their rigid structure. The rigid domain
+can be a stretch of amino acid sequence forming a stable fold or 
+just simply one residue in a 
+
+```
+if (rij > vdwij)
+Evdw += 0.;
+else if (rij <= vdwij && rij >= 0.7*vdwij)
+Evdw += -57.273*(1.0 - rij/(0.85*vdwij));
+else if (rij < 0.7*vdwij)
+Evdw += 10.;
+```
 
 ### Generate ensemble
+
 
 ### Generate triangular surface
 
