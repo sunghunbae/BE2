@@ -15,10 +15,10 @@ Reliable prediction of tau(c) will help to detect intra- and intermolecular inte
 
 Please cite the following paper if you use BE2.
 
-- Prediction of the Rotational Tumbling Time for Proteins with Disordered Segments
-Sung-Hun Bae, H. Jane Dyson, and Peter E. Wright
-Journal of the American Chemical Society 2009 131 (19), 6814-6821
-http://pubs.acs.org/doi/abs/10.1021/ja809687r
+- Prediction of the Rotational Tumbling Time for Proteins with Disordered Segments.
+  Sung-Hun Bae, H. Jane Dyson, and Peter E. Wright (2009)
+  J. Am. Chem. Soc. 131 (19), 6814-6821.
+  http://pubs.acs.org/doi/abs/10.1021/ja809687r
 
 How to install?
 ===============
@@ -29,8 +29,10 @@ You need the following packages to install BE2.
 
 - CMake
 - GNU Scientific Library (GSL) development
+-- Ubuntu: sudo apt-get install libgsl0-dev
 - GNU Triangulated Surface Library (GTS) development
-- GLIB
+- GLIB2.0 development
+
 
 ### Make
 ```
