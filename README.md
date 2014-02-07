@@ -147,6 +147,8 @@ Drr 3      4.009 |  5.618e-01  3.995e-01  7.244e-01
 
 ### Accuracy
 
+BE2 is practically accurate!!
+
 | PDBId  | BE2 | Experiment |  PDBId  | BE2 | Experiment |
 |--------|-----|------------|---------|-----|------------|
 | 1ZNF | 2.00 | 2.4 |  6I1B | 11.06 | 12.4 |
