@@ -93,18 +93,21 @@ In the above ubiquitin example (PDBId: 1UBQ), MSMS would generate
 7970 triangular faces and 3987 vertices.
 
 In BE2, these triangular faces or boundary elements are handled by a matrix 
-of 3*face columns and 3*face rows. BE2 calculation needs matrix inversion
-and it may take a while for a big matrix. So, it would be sensible to reduce
-the matrix size as long as the accuracy is not compromised severely.
+of [3*face,3*face], thus it may take a long time to invert a large matrix.
+For the above ubiquitin example, inversion of a 23970 by 23970 matrix derived
+directly from MSMS outputs is not trivial and will take a very long time.
+So, it would be sensible to minimize the matrix size as long as the 
+accuracy is not severely compromised.
 
-The number of faces or elements depends on the size and shape complexitiy of 
-the molecule of interest, but normally 800-2400 faces are good enough. 
-However, best practice is to generate a series of surfaces with 
+The appropriate number of faces or elements depends on the size and shape complexitiy of 
+the molecule of interest, but normally 800-2400 faces are good enough for most protein
+structures. However, best practice is to generate a series of surfaces with 
 varying number of faces and run each of them, and extrapolate the results
 to an infinite number of faces.
 
-msms2gts serves this purpose. It reads MSMS output (.vert and .face files)
-and coarsen it to a desired number of faces.
+msms2gts was written to serve this purpose. 
+It reads the MSMS outputs (.vert and .face files)
+and coarsens them and saves to a GTS output with a desired number of faces.
 
 ```
 $ msms2gts 1UBQ 800
