@@ -173,27 +173,36 @@ BE2 approach focuses on one rigid domain at a time.
 However, it does not mean that BE2 is limited to proteins with only one rigid domain. 
 For proteins with multiple rigid domains linked by some disordered linker(s), the 
 diffusion tensor of each rigid domain can be separately calculated.
+The rigid domain can be any size starting from just one residue. 
+
+Since deposited PDB coordinates do not generally include the disordered 
+flexible domain(s), flexible domain(s) should be modeled while retaining the 
+structured domain(s). There are many ways to generate ensemble structures 
+including the molecular modeling toolkit (MMTK).
 
 A set of structures or ensemble describes the disordered proteins.
-There are many ways to generate a realistic ensemble structures.
 You may use your own ensemble structures or use ```eg``` to generate one.
-```eg``` generates structures by selecting and applying 
-dihedral angles selected randomly from a pre-compiled residue-specific phi-psi-chi library.
-This library was made from 500 high-resolution x-ray structures after excluding helices, strands,
-and turns
+```eg``` generates ensemble structures by rotating backbone and side chain 
+dihedral angles of the modeled template structure.
+From the junction between the rigid and disordered domain(s) 
+toward the N- or C-terminus, the molecular coordinates were
+rotated according to a pair of backbone dihedral angles (φ-ψ) and
+side-chain dihedral angles (χ1-χ4) which were randomly selected
+from an amino acid specific dihedral angle library. The φ-ψ angle
+library was built from 500 low-homology and high-resolution X-ray
+structures (resolutions < 1.8 Å) excluding all residues in
+alpha-helices, β-sheets, and turns determined by the DSSP.
+The χ angles library was adopted from a published rotamer library.
+Residues immediately preceding proline were treated as an 
+additional amino acid type, due to the restricted local conformation.
+A generated ensemble structure is accepted only if
+the number of van der Waals clash and van der Waals energy is less than the
+given maxima. van der Waals energy is defined as:
 
-rest of the molecule retain their rigid structure. The rigid domain
-can be a stretch of amino acid sequence forming a stable fold or 
-just simply one residue in a 
-
-```
-if (rij > vdwij)
-Evdw += 0.;
-else if (rij <= vdwij && rij >= 0.7*vdwij)
-Evdw += -57.273*(1.0 - rij/(0.85*vdwij));
-else if (rij < 0.7*vdwij)
-Evdw += 10.;
-```
+> Let rij and vdwij be the distance and sum of van der Waals radii of atoms i and j 
+> Evdw = 0 if vdwij < rij
+> Evdw = -57.273*(1.0-rij/(0.85*vdwio)) if  0.7*vdwij <= rij <= vdwij
+> Evdw = 10 if rij < 0.7*vdwij
 
 ### Generate ensemble
 
