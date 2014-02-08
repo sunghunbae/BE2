@@ -199,13 +199,10 @@ A generated ensemble structure is accepted only if
 the number of van der Waals clash and van der Waals energy is less than the
 given maxima. van der Waals energy is defined as:
 
-> Let rij and vdwij be the distance and sum of van der Waals radii of atoms i and j 
-
-> Evdw = 0 if vdwij < rij
-
-> Evdw = -57.273*(1.0-rij/(0.85*vdwio)) if  0.7*vdwij <= rij <= vdwij
-
-> Evdw = 10 if rij < 0.7*vdwij
+> Let rij and vdwij be the distance and sum of van der Waals radii of atoms i and j,
+| Evdw = 0 if vdwij < rij
+| Evdw = -57.273*(1.0-rij/(0.85*vdwio)) if  0.7*vdwij <= rij <= vdwij
+| Evdw = 10 if rij < 0.7*vdwij
 
 ### Generate ensemble
 
