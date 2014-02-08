@@ -186,13 +186,13 @@ You may use your own ensemble structures or use ```eg``` to generate one.
 dihedral angles of the modeled template structure.
 From the junction between the rigid and disordered domain(s) 
 toward the N- or C-terminus, the molecular coordinates were
-rotated according to a pair of backbone dihedral angles (φ-ψ) and
-side-chain dihedral angles (χ1-χ4) which were randomly selected
-from an amino acid specific dihedral angle library. The φ-ψ angle
+rotated according to a pair of backbone dihedral angles (phi-psi) and
+side-chain dihedral angles (chi1-chi4) which were randomly selected
+from an amino acid specific dihedral angle library. The phi-psi angle
 library was built from 500 low-homology and high-resolution X-ray
-structures (resolutions < 1.8 Å) excluding all residues in
-alpha-helices, β-sheets, and turns determined by the DSSP.
-The χ angles library was adopted from a published rotamer library.
+structures (resolutions < 1.8 angstrom) excluding all residues in
+alpha-helices, beta-sheets, and turns determined by the DSSP.
+The chi angles library was adopted from a published rotamer library.
 Residues immediately preceding proline were treated as an 
 additional amino acid type, due to the restricted local conformation.
 A generated ensemble structure is accepted only if
@@ -200,8 +200,11 @@ the number of van der Waals clash and van der Waals energy is less than the
 given maxima. van der Waals energy is defined as:
 
 > Let rij and vdwij be the distance and sum of van der Waals radii of atoms i and j 
+
 > Evdw = 0 if vdwij < rij
+
 > Evdw = -57.273*(1.0-rij/(0.85*vdwio)) if  0.7*vdwij <= rij <= vdwij
+
 > Evdw = 10 if rij < 0.7*vdwij
 
 ### Generate ensemble
