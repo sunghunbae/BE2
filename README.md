@@ -1,7 +1,7 @@
 What is BE2?
 ============
 
-BE2 is an ensemble approach to the boundary element method (BEM).
+**BE2** is an ensemble approach to the boundary element method (BEM).
 Using two layers of molecular surfaces whose correlated velocities decay exponentially with distance, 
 it can accurately predicts molecular tumbling time for unstructed or disordered proteins.
 
@@ -46,7 +46,7 @@ $ cmake ..
 $ make
 $ make install
 ```
-By default, an executable binary files (```be2```,```msms2gts```,```eg```) and 
+By default, an executable binary files (**```be2```**,**```msms2gts```**,**```eg```**) and 
 data file directory (```eglib/```) will be installed in ~/bin directory. 
 You may change the destination directory defined the CMakeLists.txt file :
 ```
