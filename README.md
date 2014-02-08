@@ -66,6 +66,13 @@ Molecular surface represented by triangular surfaces are
 generated from atomic coordinates by MSMS program written by Michel F. Sanner. 
 Binaries can be downloaded from http://mgltools.scripps.edu/downloads#msms
 
+Please note that MSMS and pdb_to_xyzr should be given executable permission:
+
+```
+$ chmod +x msms.i86Linux2.2.6.1
+$ chmod +x pdb_to_xyzr
+```
+
 MSMS accepts atomic coordinates as xyzr format 
 which can be generated from a PDB file by an Awk script ```pdb_to_xyzr```.
 The ```pdb_to_xyzr``` is a part of MSMS binary distribution and 
@@ -73,8 +80,6 @@ requires another file ```atmtypenumbers```.
 Note that ```atmtypenumbers``` should be in the current working directory.
 
 ```
-$ chmod +x msms.i86Linux2.2.6.1
-$ chmod +x pdb_to_xyzr
 $ pdb_to_xyzr 1UBQ.pdb | awk '{print $1,$2,$3,$4+1.1}' > 1UBQ.xyzr
 $ msms.i86Linux2.2.6.1 -density 1 -if 1UBQ.xyzr -of 1UBQ >& msms.log
 $ ls 1UBQ.*
@@ -105,7 +110,7 @@ structures. However, best practice is to generate a series of surfaces with
 varying number of faces and run each of them, and extrapolate the results
 to an infinite number of faces.
 
-msms2gts was written to serve this purpose. 
+**msms2gts** was written to serve this purpose. 
 It reads the MSMS outputs (.vert and .face files)
 and coarsens them and saves to a GTS output with a desired number of faces.
 
@@ -147,8 +152,6 @@ Drr 3      4.009 |  5.618e-01  3.995e-01  7.244e-01
 
 ### Accuracy
 
-BE2 is practically accurate!!
-
 | PDB  | BE2 | Exp | PDB | BE2  | Exp  | PDB  |  BE2 |  Exp | PDB |  BE2  |  Exp  |
 |------|-----|-----|-----|------|------|------|------|------|-----|-------|-------|
 | 1ZNF | 2.0 | 2.4 |2CDS | 7.9  | 8.3  | 6I1B | 11.1 | 12.4 |1NWK | 25.2  | 24.5  |
@@ -181,8 +184,9 @@ structured domain(s). There are many ways to generate ensemble structures
 including the molecular modeling toolkit (MMTK).
 
 A set of structures or ensemble describes the disordered proteins.
-You may use your own ensemble structures or use ```eg``` to generate one.
-```eg``` generates ensemble structures by rotating backbone and side chain 
+You may use your own ensemble structures or use **```eg```** to generate one.
+
+**```eg```** generates ensemble structures by rotating backbone and side chain 
 dihedral angles of the modeled template structure.
 From the junction between the rigid and disordered domain(s) 
 toward the N- or C-terminus, the molecular coordinates were
@@ -199,10 +203,10 @@ A generated ensemble structure is accepted only if
 the number of van der Waals clash and van der Waals energy is less than the
 given maxima. van der Waals energy is defined as:
 
-> Let rij and vdwij be the distance and sum of van der Waals radii of atoms i and j,
-| Evdw = 0 if vdwij < rij
-| Evdw = -57.273*(1.0-rij/(0.85*vdwio)) if  0.7*vdwij <= rij <= vdwij
-| Evdw = 10 if rij < 0.7*vdwij
+> | Let rij and vdwij be the distance and sum of van der Waals radii of atoms i and j,  
+| Evdw = 0 if vdwij < rij 
+| Evdw = -57.273*(1.0-rij/(0.85*vdwio)) if  0.7*vdwij <= rij <= vdwij  
+| Evdw = 10 if rij < 0.7*vdwij  
 
 ### Generate ensemble
 
