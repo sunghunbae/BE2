@@ -252,7 +252,8 @@ A 229 C
 A 230 C
 ```
 
-In the rlist file, each line defines which residue to be rotated with respect to N- or C- terminus.
+Each line in the rlist file defines which residue to be affected by selected dihedral angles
+and by rotating either N- or C- terminal part of the chain.
 For example, ```A 124 N``` means that selected phi,psi,chi dihedral angles to be applied to 
 the residue 124 by rotating residues 89-123. 
 Likewise, ```A 227 C``` means that selected dihedral angles to applied
