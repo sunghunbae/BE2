@@ -57,8 +57,8 @@ Please make sure that files and data are accessible from your working directory
 by adding ```~/bin```, ```~/bin/eglib/` or your destination directory in the 'path'.
 
 
-How to run for rigid proteins?
-==============================
+How to run for the rigid proteins?
+==================================
 
 ### Generate triangular surface
 
@@ -165,8 +165,8 @@ Drr 3      4.009 |  5.618e-01  3.995e-01  7.244e-01
 | 1HRC | 6.7 | 6.9 |1AVU | 10.8 | 12.6 | 1BEB | 22.9 | 21.9 |1GPB | 125.1 | 128.2 |
 | 2CDS | 7.9 | 7.6 |1WRT | 23.5 | 23.1 |
 
-How to run for disordered proteins?
-====================================
+How to run for the disordered proteins?
+=======================================
 
 The disordered or unstructured proteins have one or more part(s) or domain(s)
 that remain unstable and are constantly changing their conformations 
@@ -207,6 +207,7 @@ given maxima.
 
 ```
 $ eg
+
   Ensemble Generator (coil library/dihedral angle rotations)
 
   Usage: eg [options]
@@ -228,12 +229,7 @@ $ eg
 The mouse prion protein(89-230) ensemble structures can be generated as:
 
 ```
-$ eg -i MoPrP89-230.pdb -d A 127 224 -r rlist-prp \
-     -l ~/bin/eglib/fycqr.lib -o prp 1 3 -maxc 20 -maxE 5000 -rlist -pdb
-```
-
-*rlist-prp*
-```
+$ cat rlist-prp
 A 90 N
 A 91 N
 A 92 N
@@ -250,15 +246,51 @@ A 227 C
 A 228 C
 A 229 C
 A 230 C
+
+$ eg -i MoPrP89-230.pdb -d A 127 224 -r rlist-prp \
+     -l ~/bin/eglib/fycqr.lib -o prp 1 1000 -maxc 20 -maxE 5000 -rlist -pdb
+
+# library: /home/shbae/bin/eglib/fycqr.lib (21190)
+# input PDB: MoPrP89-230.pdb (2209)
+# rotation list: rlist-prp (43)
+# testing steric clash of the input PDB coordinates
+#       clash= 0 Evdw= 2779.36
 ```
 
-Each line in the rlist file defines which residue to be affected by selected dihedral angles
-and by rotating either N- or C- terminal part of the chain.
-For example, ```A 124 N``` means that selected phi,psi,chi dihedral angles to be applied to 
-the residue 124 by rotating residues 89-123. 
-Likewise, ```A 227 C``` means that selected dihedral angles to applied
-to the residue 227 by rotating residues 278-230.
+The *rlist* file defines which residue to be randomly sampled for 
+phi, psi and chi dihedral angles from the library, and which part
+(N- or C-terminal from the defined residue) is to be rotated to satisfy
+the phi, psi backbone dihedral angles.
+For example, ```A 124 N``` means that phi,psi,chi dihedral angles are 
+to be sampled and applied to the residue 124 by rotating residues 89-123.
+Likewise, ```A 227 C``` means that dihedral angles are to be sampled 
+and applied to the residue 227 by rotating residues 278-230.
+
+**eg** output shows the number of clashes and van der Waals energy of 
+the template pdb file. You may adjust the maximum number of 
+clashes and maximum van der Waals energy by ```-maxc``` and ```-maxE```.
+If they are set too low, it will take long time for **eg** to generate
+a desired number of ensemble structures that satisfy the criteria.
+
+The above example would generate ```prp_0001.rot```,```prp_0001.pdb```,...,
+```prp_1000.rot```,```prp_1000.pdb`. *.rot* files contain selected
+dihedral angles. In order to save disk space, you may delete the *.pdb* files
+and keep only the *.rot* files. 
+You can rebuild the *.pdb* files using the *.rot* files.
+
+```
+$ eg -i MoPrP89-230.pdb -r prp_0001.rot -rebuild
+$ eg -i MoPrP89-230.pdb -r prp_0002.rot -rebuild
+```
 
 ### Generate triangular surface
+
+You need two sets of surfaces or boundary elements: one for a reference rigid domain
+and the other for an ensemble structure.
+
+#### Rigid surface
+
+#### Instantaneous surface
+
 
 ### Calculate diffusion tensors
