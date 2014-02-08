@@ -186,6 +186,8 @@ including the molecular modeling toolkit (MMTK).
 A set of structures or ensemble describes the disordered proteins.
 You may use your own ensemble structures or use **```eg```** to generate one.
 
+### Generate ensemble
+
 **```eg```** generates ensemble structures by rotating backbone and side chain 
 dihedral angles of the modeled template structure.
 From the junction between the rigid and disordered domain(s) 
@@ -201,15 +203,60 @@ Residues immediately preceding proline were treated as an
 additional amino acid type, due to the restricted local conformation.
 A generated ensemble structure is accepted only if
 the number of van der Waals clash and van der Waals energy is less than the
-given maxima. van der Waals energy is defined as:
+given maxima. 
 
-> | Let rij and vdwij be the distance and sum of van der Waals radii of atoms i and j,  
-| Evdw = 0 if vdwij < rij 
-| Evdw = -57.273*(1.0-rij/(0.85*vdwio)) if  0.7*vdwij <= rij <= vdwij  
-| Evdw = 10 if rij < 0.7*vdwij  
+```
+$ eg
+  Ensemble Generator (coil library/dihedral angle rotations)
 
-### Generate ensemble
+  Usage: eg [options]
+  options:
+    -i #        read <i>nput PDB file
+    -d # # #    rigid <d>omain [chainId begin end]
+    -r #        read <r>otation list (default= rlist)
+    -l #        import <l>ibrary (default= fycqr.lib)
+    -o # # #    <o>utput [prefix begin end]
+    -maxc #     <max>imum allowed <c>lashes (default= 0)
+    -maxE #     <max>imum allowed VDW <e>nergy (default= 10000)
+    -seed #     <seed> for random number generation
+    -pdb        save output as <PDB> (.pdb)
+    -rlist      save output as <rlist> (.rot)
+    -rebuild    re<b>uild from rlist
+    -quiet      be <quiet> do not print anything
+```
 
+The mouse prion protein(89-230) ensemble structures can be generated as:
+
+```
+$ eg -i MoPrP89-230.pdb -d A 127 224 -r rlist-prp \
+     -l ~/bin/eglib/fycqr.lib -o prp 1 3 -maxc 20 -maxE 5000 -rlist -pdb
+```
+
+*rlist-prp*
+```
+A 90 N
+A 91 N
+A 92 N
+--- omitted ---
+A 124 N
+A 125 N
+A 126 N
+#
+# folded-domain (127-224, coordinates fixed)
+#
+A 225 C
+A 226 C
+A 227 C
+A 228 C
+A 229 C
+A 230 C
+```
+
+In the rlist file, each line defines which residue to be rotated with respect to N- or C- terminus.
+For example, ```A 124 N``` means that selected phi,psi,chi dihedral angles to be applied to 
+the residue 124 by rotating residues 89-123. 
+Likewise, ```A 227 C``` means that selected dihedral angles to applied
+to the residue 227 by rotating residues 278-230.
 
 ### Generate triangular surface
 
