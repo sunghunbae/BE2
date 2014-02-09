@@ -365,7 +365,7 @@ averaging of about 1000 or more ensemble structures leads to
 practical convergency at which fluctuation of 1/(6Diso) 
 is less than 0.2 ns.
 
-### Temperature adjustment
+### Temperature and viscosity
 
 The translational and rotational diffusion tensors depend on the solution
 viscosity and temperature. There are ```-t``` and ```-v``` options in **BE2**
@@ -400,8 +400,9 @@ $v_= 2.414e-2*exp(247.8/(293.15-140.0)*log(10));
 printf("tc: %f at %f C %f K --> tc: %f at 20 C\n",$tc,$C,$K,$tc*$K/293.15*$v_/$v);
 ```
 
-You can also compare the BE2 result with the tauc estimated 
-from the Stokes-Einstein equation:
+### Comparison to the Stokes-Einstein estimation
+
+BE2 results can be compared with the tauc estimated from the Stokes-Einstein equation.
 
 ** Stokes-Einstein estimation **
 
