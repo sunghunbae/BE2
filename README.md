@@ -375,7 +375,7 @@ For tauc measured at different conditions than water/20 deg.C,
 you can convert the experimental tauc to the standard condition.
 Here are some Perl scripts for temperature and viscosity:
 
-** Table. temperature dependent water viscosity **
+**Table for temperature dependent water viscosity**
 ```
 #!/usr/bin/perl
 print "# viscosity of water (cP)\n";
@@ -387,8 +387,7 @@ for ($C=15; $C < 40; $C++)
 }
 ```
 
-** Convert tauc to the standard condition (water, 20 C) **
-
+**Convert tauc to the standard condition (water, 20 deg.C)**
 ```
 #!/usr/bin/perl
 # ex. conversion tauc=8.4 at 25 deg.C to the standard condition
@@ -403,8 +402,6 @@ printf("tc: %f at %f C %f K --> tc: %f at 20 C\n",$tc,$C,$K,$tc*$K/293.15*$v_/$v
 ### Comparison to the Stokes-Einstein estimation
 
 BE2 results can be compared with the tauc estimated from the Stokes-Einstein equation.
-
-** Stokes-Einstein estimation **
 
 ```
 #!/usr/bin/perl
