@@ -340,9 +340,11 @@ Drr 3      1.353 |  4.604e-01  8.867e-01  4.244e-02
 ```
 
 For example, 10 ensemble structures would result in a range of 
-rotational correlation times. In this mouse Prion(89-230) example, 
-about 1000 ensemble structures provide a practical convergency 
-(1/(6Diso) fluctuation less than 0.2 ns or less).
+rotational correlation times (1/(6Diso)). 
+In this mouse Prion(89-230) example, 
+averaging of about 1000 ensemble structures leads to 
+practical convergency at which fluctuation of 1/(6Diso) 
+is less than 0.2 ns.
 
 ```
 $ grep Diso prp_*.out
