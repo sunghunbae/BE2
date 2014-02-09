@@ -367,13 +367,14 @@ is less than 0.2 ns.
 
 ### Temperature and viscosity
 
-The translational and rotational diffusion tensors depend on the solution
-viscosity and temperature. There are ```-t``` and ```-v``` options in **BE2**
-to provide temperature and viscosity for the calculation (temperature
-is 293.13 K or 20 deg. and viscosity is 1.002 cP by default).
-For tauc measured at different conditions than water/20 deg.C, 
-you can convert the experimental tauc to the standard condition.
-Here are some Perl scripts for temperature and viscosity:
+Hydrodynamic properties such as the translational and rotational 
+diffusion tensors depend on the solution
+temperature and viscosity. 
+These parameters can be specified by ```-t``` and ```-v``` options in **BE2**. 
+By default, temperature is 293.13 K or 20 deg. C and viscosity is 1.002 cP.
+A tauc value measured at different temperature can be converted to
+a value at 20 deg. C by assuming that the buffer follows 
+temperature dependent viscosity of water.
 
 **Table for temperature dependent water viscosity**
 ```
