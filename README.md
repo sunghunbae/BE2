@@ -126,10 +126,7 @@ BE2 reads MSMS, GTS, or OFF format files and calculates translational and diffus
 
 ```
 $ be2 -gts 1UBQ > 1UBQ.0800.out
-```
-
-The output will be like:
-```
+$ cat 1UBQ.0800.out
 Temperature  : 293.15 K
 Viscosity    : 1.002 cP
 GTS_surface  : 1UBQ.0800.gts (Vertex: 402 Edge: 1200 Face: 800)
@@ -207,9 +204,7 @@ given maxima.
 
 ```
 $ eg
-
   Ensemble Generator (coil library/dihedral angle rotations)
-
   Usage: eg [options]
   options:
     -i #        read <i>nput PDB file
@@ -246,10 +241,8 @@ A 227 C
 A 228 C
 A 229 C
 A 230 C
-
 $ eg -i MoPrP89-230.pdb -d A 127 224 -r rlist-prp \
      -l ~/bin/eglib/fycqr.lib -o prp 1 1000 -maxc 20 -maxE 5000 -rlist -pdb
-
 # library: /home/shbae/bin/eglib/fycqr.lib (21190)
 # input PDB: MoPrP89-230.pdb (2209)
 # rotation list: rlist-prp (43)
@@ -273,24 +266,94 @@ If they are set too low, it will take long time for **eg** to generate
 a desired number of ensemble structures that satisfy the criteria.
 
 The above example would generate ```prp_0001.rot```,```prp_0001.pdb```,...,
-```prp_1000.rot```,```prp_1000.pdb`. *.rot* files contain selected
+```prp_1000.rot```,```prp_1000.pdb```. *.rot* files contain selected
 dihedral angles. In order to save disk space, you may delete the *.pdb* files
 and keep only the *.rot* files. 
 You can rebuild the *.pdb* files using the *.rot* files.
+
+Please note that in the generated pdb files the rigid domain will have  
+the same XYZ coordinates as the template pdb, which helps BE2 to relate
+the rigid domain surface and the ensemble structure surfaces. 
 
 ```
 $ eg -i MoPrP89-230.pdb -r prp_0001.rot -rebuild
 $ eg -i MoPrP89-230.pdb -r prp_0002.rot -rebuild
 ```
 
-### Generate triangular surface
+### Generate triangular surfaces
 
-You need two sets of surfaces or boundary elements: one for a reference rigid domain
-and the other for an ensemble structure.
+You need two sets of molecular surfaces or boundary elements: a static surface
+for the rigid domain and an instantaneous surface for a snapshot of an ensemble structure.
+The static surface serves as a reference boundary to which the instantaneous surface is
+related to calculate the *velocity correlation*.
+The static surface matrix does not undergo an inverse operation, so coarsening is not necessary.
+In the mouse Prion(89-230), residues 127-224 can be safely assumed as rigid thus 
+a static surface for residues 127-224 and a series of 
+instantaneous surfaces for the whole molecule, residues 89-230, will be generated.
 
-#### Rigid surface
+#### Static surface
+
+```
+$ pdb_to_xyzr MoPrP127-224.pdb | awk '{print $1,$2,$3,$4+1.1}' > MoPrP127-224.xyzr
+$ msms.i86Linux2.2.6.1 -density 1 -if MoPrP127-224.xyzr -of MoPrP127-224 >& msms.log
+$ msms2gts MoPrP127-224
+```
+
+One static surface is used with all instantaneous surfaces.
 
 #### Instantaneous surface
 
+```
+$ pdb_to_xyzr prp_0001.pdb | awk '{print $1,$2,$3,$4+1.1}' > prp_0001.xyzr
+$ msms.i86Linux2.2.6.1 -density 1 -if prp_0001.xyzr -of prp_0001 >& msms.log
+$ msms2gts prp_0001 800
+```
+
+An instantaneous surface is genereated for each ensemble structure with proper coarsening.
 
 ### Calculate diffusion tensors
+
+```
+$ be2 -gts prp_0001.0800 -rR MoPrP127-224 > prp_0001.out
+$ cat prp_0001.out
+Temperature  : 293.15 K
+Viscosity    : 1.002 cP
+Algorithm    : 1
+GTS_surface  : prp_0001.0800.gts (Vertex: 402 Edge: 1200 Face: 800)
+Dimension    : X   77.7835  Y   75.2813 Z   36.7675
+GTS_surface  : MoPrP127-224.gts (Vertex: 6493 Edge: 19473 Face: 12982)
+Dimension    : X   48.1480  Y   41.8170 Z   31.1910
+Calculating G matrix (2400 x 2400) ...... time 00:00:24
+Inverting   G matrix (2400 x 2400) ...... time 00:01:20
+Surface_Area (  2.892479 ...  36.501948) Sum= 10729.6 A^2
+
+Center_of_Diffusion 1.5827 6.6625 -0.4895
+Dtt Eigenvalues (10^-7 cm^2 s^-1) | Eigenvectors
+Dtt 1      9.646 |  6.712e-02 -1.479e-01  9.867e-01
+Dtt 2     10.839 |  9.560e-01 -2.737e-01 -1.061e-01
+Dtt 3     11.457 |  2.857e-01  9.504e-01  1.230e-01
+Drr Eigenvalues (10^7 s^-1) | Eigenvectors
+Drr 1      0.903 |  7.212e-02 -8.502e-02  9.938e-01
+Drr 2      1.037 |  8.848e-01 -4.545e-01 -1.031e-01
+Drr 3      1.353 |  4.604e-01  8.867e-01  4.244e-02
+# gamma 6 eps 22 1/(6Diso)  15.186 ns
+```
+
+For example, 10 ensemble structures would result in a range of 
+rotational correlation times. In this mouse Prion(89-230) example, 
+about 1000 ensemble structures provide a practical convergency 
+(1/(6Diso) fluctuation less than 0.2 ns or less).
+
+```
+$ grep Diso prp_*.out
+prp_0001.out:# gamma 6 eps 22 1/(6Diso)  15.186 ns
+prp_0002.out:# gamma 6 eps 22 1/(6Diso)  12.504 ns
+prp_0003.out:# gamma 6 eps 22 1/(6Diso)  12.470 ns
+prp_0004.out:# gamma 6 eps 22 1/(6Diso)  12.580 ns
+prp_0005.out:# gamma 6 eps 22 1/(6Diso)  13.991 ns
+prp_0006.out:# gamma 6 eps 22 1/(6Diso)  12.952 ns
+prp_0007.out:# gamma 6 eps 22 1/(6Diso)  12.424 ns
+prp_0008.out:# gamma 6 eps 22 1/(6Diso)  11.894 ns
+prp_0009.out:# gamma 6 eps 22 1/(6Diso)  13.120 ns
+prp_0010.out:# gamma 6 eps 22 1/(6Diso)  12.661 ns
+```
