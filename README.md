@@ -340,11 +340,7 @@ Drr 3      1.353 |  4.604e-01  8.867e-01  4.244e-02
 ```
 
 For example, 10 ensemble structures would result in a range of 
-rotational correlation times (1/(6Diso)). 
-In this mouse Prion(89-230) example, 
-averaging of about 1000 ensemble structures leads to 
-practical convergency at which fluctuation of 1/(6Diso) 
-is less than 0.2 ns.
+rotational correlation times (1/(6Diso)).
 
 ```
 $ grep Diso prp_*.out
@@ -358,4 +354,61 @@ prp_0007.out:# gamma 6 eps 22 1/(6Diso)  12.424 ns
 prp_0008.out:# gamma 6 eps 22 1/(6Diso)  11.894 ns
 prp_0009.out:# gamma 6 eps 22 1/(6Diso)  13.120 ns
 prp_0010.out:# gamma 6 eps 22 1/(6Diso)  12.661 ns
+```
+
+For the mouse Prion(89-230), the experimental rotational correlation
+time (1/(6Diso)) or tauc is 13.4 ns at standard condition (20 deg. C). 
+Even with only 10 structures, averaged tauc is pretty close to the experimental value.
+However, a large number of ensemble structures are required for more
+reliably prediction. In the mouse Prion(89-230), it was found that 
+averaging of about 1000 or more ensemble structures leads to 
+practical convergency at which fluctuation of 1/(6Diso) 
+is less than 0.2 ns.
+
+### Temperature adjustment
+
+The translational and rotational diffusion tensors depend on the solution
+viscosity and temperature. There are ```-t``` and ```-v``` options in **BE2**
+to provide temperature and viscosity for the calculation (temperature
+is 293.13 K or 20 deg. and viscosity is 1.002 cP by default).
+For tauc measured at different conditions than water/20 deg.C, 
+you can convert the experimental tauc to the standard condition.
+Here are some Perl scripts for temperature and viscosity:
+
+** Table. temperature dependent water viscosity **
+```
+#!/usr/bin/perl
+print "# viscosity of water (cP)\n";
+print "# (K) (deg) (cP)\n";
+for ($C=15; $C < 40; $C++) 
+{
+    $K = $C + 273.15;
+    printf("%.3f %.3f %.3f\n",$K,$C,2.414e-2*exp(247.8/($K-140.0)*log(10)));
+}
+```
+
+** Convert tauc to the standard condition (water, 20 C) **
+
+```
+#!/usr/bin/perl
+# ex. conversion tauc=8.4 at 25 deg.C to the standard condition
+$tc = 8.4;
+$C = 25.0;
+$K = $C + 273.15;
+$v = 2.414e-2*exp(247.8/($K-140.0)*log(10));
+$v_= 2.414e-2*exp(247.8/(293.15-140.0)*log(10));
+printf("tc: %f at %f C %f K --> tc: %f at 20 C\n",$tc,$C,$K,$tc*$K/293.15*$v_/$v);
+```
+
+You can also compare the BE2 result with the tauc estimated 
+from the Stokes-Einstein equation:
+
+** Stokes-Einstein estimation **
+
+```
+#!/usr/bin/perl
+# ex. estimate tauc for mw=12719
+$MW = 12719;
+$SE = 1.38*6.022*293.15/1.002/6/($MW*0.73);
+printf("MW:%d SE: %.5f (1/us) SE_predicted_tc: %.2f ns\n",$MW,$SE,1/(3*$SE));
 ```
