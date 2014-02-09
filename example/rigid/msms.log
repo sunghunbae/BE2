@@ -1,0 +1,31 @@
+MSMS 2.6.1 started on arugula
+Copyright M.F. Sanner (1994)
+Compilation flags -O2 -DVERBOSE -DTIMING
+INPUT  1NWK.xyzr 2924 spheres 0 collision only, radii  2.500 to  3.100
+PARAM  Probe_radius  1.500 density  1.000 hdensity  3.000
+REDUCED SURFACE ...
+    RS component 0 identified 2801 2798 2793
+    0 free edge(s) found in component 0
+    RS component  #faces  #edges #free_edges  #vertices   genus
+         0        1866     2799          0        895      20
+    Time Reduced Surface real: 0.19 user: 0.19 sys: 0.00
+ANALYTICAL SOLVENT EXCLUDED SURFACE...
+    Component   0
+        Time Surface real: 0.01 user: 0.01 sys: 0.00
+        Time Singularities real: 0.01 user: 0.00 sys: 0.00
+    SES comp.  #fac.  #edg. #s_edg. #vert. #s_vert. R_h C_h genus
+         0     5619  11247     17    5628       34   0   0    1
+ANALYTICAL SURFACE AREA :
+    Comp. probe_radius,   reent,    toric,   contact    SES       SAS
+      0       1.500    1706.811  4931.075  6314.742 12952.628 14588.135
+TRIANGULATION...
+    Component 0
+    component#, vertices,  edges,  faces, genus, density
+        0          12820   38460   25640    1     0.990
+        Time Triangulation real: 0.17 user: 0.17 sys: 0.00
+NUMERICAL VOLUMES AND AREA
+    Comp. probe_radius SES_volume SES_area)
+       0      1.50    65457.652  12657.364
+    Total ses_volume: 65457.652
+MSMS terminated normally
+Total Time real: 0.55 user: 0.54 sys: 0.01

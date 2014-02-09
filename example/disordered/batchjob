@@ -1,0 +1,38 @@
+#!/bin/csh -f
+set rigid = 'MoPrP127-224'
+set ensemble  = `ls prp_*.pdb`
+
+# triangular surface of the rigid domain as reference
+
+# convert PDB coordinates into XYZR
+./pdb_to_xyzr ${rigid}.pdb | awk '{print $1,$2,$3,$4+1.1}' > ${rigid}.xyzr
+
+# generate triangular surfaces
+./msms.i86Linux2.2.6.1 -density 1 -if ${rigid}.xyzr -of ${rigid} >& msms.log 
+
+# convert to GTS format
+# coarsening is not necessary for reference surface
+# because the matrix inversion does not apply to 
+# the reference surface
+
+msms2gts ${rigid}
+
+foreach pdbfile ($ensemble)
+
+  set id = `echo $pdbfile:r:t`
+
+  # convert PDB coordinates into XYZR
+  ./pdb_to_xyzr ${id}.pdb | awk '{print $1,$2,$3,$4+1.1}' > ${id}.xyzr
+
+  # generate triangular surfaces
+  ./msms.i86Linux2.2.6.1 -density 1 -if ${id}.xyzr -of ${id} >& msms.log 
+
+  # convert MSMS output into GTS format
+  # coarsen to 800 faces
+
+  msms2gts ${id} 800
+
+  # run BE2, calculate tc using two boundaries
+  be2 -gts ${id}.0800 -rR ${rigid} > ${id}.out
+
+end

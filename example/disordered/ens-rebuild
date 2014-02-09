@@ -1,0 +1,10 @@
+eg -i MoPrP89-230.pdb -r prp_0001.rot -rebuild
+eg -i MoPrP89-230.pdb -r prp_0002.rot -rebuild
+eg -i MoPrP89-230.pdb -r prp_0003.rot -rebuild
+eg -i MoPrP89-230.pdb -r prp_0004.rot -rebuild
+eg -i MoPrP89-230.pdb -r prp_0005.rot -rebuild
+eg -i MoPrP89-230.pdb -r prp_0006.rot -rebuild
+eg -i MoPrP89-230.pdb -r prp_0007.rot -rebuild
+eg -i MoPrP89-230.pdb -r prp_0008.rot -rebuild
+eg -i MoPrP89-230.pdb -r prp_0009.rot -rebuild
+eg -i MoPrP89-230.pdb -r prp_0010.rot -rebuild

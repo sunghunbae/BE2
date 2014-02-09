@@ -1,0 +1,6 @@
+eg 	-l ~/bin/eglib/fycqr.lib \
+	-i MoPrP89-230.pdb \
+	-r rlist-prp \
+	-d A 127 224 \
+    	-maxc 20 -maxE 5000 \
+	-o prp 1 10 -rlist -pdb
