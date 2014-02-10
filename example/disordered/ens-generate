@@ -1,4 +1,4 @@
-eg 	-l ~/bin/eglib/fycqr.lib \
+eg 	-l ~/bin/eglib/fycqr \
 	-i MoPrP89-230.pdb \
 	-r rlist-prp \
 	-d A 127 224 \
