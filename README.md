@@ -293,9 +293,7 @@ it will take long for **eg** to generate a desired number of ensemble structures
 that satisfy the criteria.
 
 The above example would generate ```prp_0001.rot```,```prp_0001.pdb```,...,
-```prp_1000.rot```,```prp_1000.pdb```. 
-
-*.rot* files contain selected dihedral angles. 
+```prp_1000.rot```,```prp_1000.pdb```. *.rot* files contain selected dihedral angles. 
 In order to save disk space, you may delete the *.pdb* files and keep only the *.rot* files. 
 You can rebuild the *.pdb* files using the *.rot* files and the initial template without any loss.
 
