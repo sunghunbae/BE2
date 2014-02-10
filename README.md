@@ -46,7 +46,7 @@ $ cd build
 $ cmake ..
 $ make
 $ make install
-
+```
 ### Installed files
 
 ```
@@ -232,7 +232,7 @@ $ eg
     -i #        read <i>nput PDB file
     -d # # #    rigid <d>omain [chainId begin end]
     -r #        read <r>otation list (default= rlist)
-    -l #        import <l>ibrary (default= fycqr.lib)
+    -l #        import <l>ibrary (default= fycqr)
     -o # # #    <o>utput [prefix begin end]
     -maxc #     <max>imum allowed <c>lashes (default= 0)
     -maxE #     <max>imum allowed VDW <e>nergy (default= 10000)
@@ -266,8 +266,8 @@ A 229 C
 A 230 C
 
 $ eg -i MoPrP89-230.pdb -d A 127 224 -r rlist-prp \
-     -l ~/bin/eglib/fycqr.lib -o prp 1 1000 -maxc 20 -maxE 5000 -rlist -pdb
-# library: /home/shbae/bin/eglib/fycqr.lib (21190)
+     -l ~/bin/eglib/fycqr -o prp 1 1000 -maxc 20 -maxE 5000 -rlist -pdb
+# library: /home/shbae/bin/eglib/fycqr (21190)
 # input PDB: MoPrP89-230.pdb (2209)
 # rotation list: rlist-prp (43)
 # testing steric clash of the input PDB coordinates
