@@ -3,13 +3,13 @@ What is BE2?
 
 **BE2** is an ensemble approach to the boundary element method (BEM).
 Using two layers of molecular surfaces whose correlated velocities decay exponentially with distance, 
-it can accurately predicts molecular tumbling time for unstructed or disordered proteins.
+it can accurately predict molecular tumbling time, tauc, for rigid and flexible or disordered proteins.
 
 ### Background
 
-For well-structured, rigid proteins, the prediction of rotational tumbling time using atomic coordinates is reasonably accurate, but is inaccurate for proteins with long unstructured sequences. Under physiological conditions, many proteins contain long disordered segments that play important regulatory roles in fundamental biological events including signal transduction and molecular recognition. 
+For well-structured rigid proteins, the prediction of rotational tumbling time using atomic coordinates is reasonably accurate, but is inaccurate for proteins with long unstructured sequences. Under physiological conditions, many proteins contain long disordered segments that play important regulatory roles in fundamental biological events including signal transduction and molecular recognition. 
 
-Reliable prediction of tau(c) will help to detect intra- and intermolecular interactions and conformational switches between more ordered and less ordered states of the disordered segments. The method has been extensively validated using 12 reference proteins with 14 to 103 disordered residues at the N- and/or C-terminus and has been successfully employed to explain a set of published results on a system that incorporates a conformational switch.
+Reliable prediction of tauc will help to detect intra- and intermolecular interactions and conformational switches between more ordered and less ordered states of the disordered segments. The method has been extensively validated using 12 reference proteins with 14 to 103 disordered residues at the N- and/or C-terminus and has been successfully employed to explain a set of published results on a system that incorporates a conformational switch.
 
 ### Citation
 
@@ -39,6 +39,7 @@ $ sudo apt-get install cmake libgsl0-dev libgts-dev libglib2.0-dev
 ```
 
 ### Make
+
 ```
 $ mkdir build
 $ cd build
@@ -47,14 +48,15 @@ $ make
 $ make install
 ```
 By default, an executable binary files (**```be2```**,**```msms2gts```**,**```eg```**) and 
-data file directory (```eglib/```) will be installed in ~/bin directory. 
+a data file ```fycqr.lib``` will be installed at ```~/bin``` 
+and ```~/bin/eglib``` directories, respectively. 
 You may change the destination directory defined the CMakeLists.txt file :
 ```
 SET(CMAKE_INSTALL_PREFIX ~/bin )
 ```
 
-Please make sure that files and data are accessible from your working directory 
-by adding ```~/bin```, ```~/bin/eglib/` or your destination directory in the 'path'.
+Please make sure that files are accessible from your working directory 
+by adding ```~/bin```, ```~/bin/eglib/` or your destination directory in the ```path```.
 
 
 How to run for the rigid proteins?
@@ -62,11 +64,11 @@ How to run for the rigid proteins?
 
 ### Generate triangular surface
 
-Molecular surface represented by triangular surfaces are 
+The triangular boundary elements representing molecular surface are 
 generated from atomic coordinates by MSMS program written by Michel F. Sanner. 
-Binaries can be downloaded from http://mgltools.scripps.edu/downloads#msms
+MSMS binaries can be downloaded from http://mgltools.scripps.edu/downloads#msms
 
-Please note that MSMS and pdb_to_xyzr should be given executable permission:
+Please note that MSMS and pdb_to_xyzr should be given executable permission after download.
 
 ```
 $ chmod +x msms.i86Linux2.2.6.1
@@ -77,7 +79,7 @@ MSMS accepts atomic coordinates as xyzr format
 which can be generated from a PDB file by an Awk script ```pdb_to_xyzr```.
 The ```pdb_to_xyzr``` is a part of MSMS binary distribution and 
 requires another file ```atmtypenumbers```. 
-Note that ```atmtypenumbers``` should be in the current working directory.
+Note that ```pdb_to_xyzr``` looks for ```atmtypenumbers``` in the current directory(```.```).
 
 ```
 $ pdb_to_xyzr 1UBQ.pdb | awk '{print $1,$2,$3,$4+1.1}' > 1UBQ.xyzr
@@ -86,8 +88,8 @@ $ ls 1UBQ.*
   1UBQ.face 1UBQ.pdb 1UBQ.vert 1UBQ.xyzr
 ```
 
-Here, we added 1.1 angstrom to the van der Waals radii to account for the 
-hydration shell, which is commonly adopted practice in the shaped based calculation 
+Here, we added 1.1 angstrom to the van der Waals radius of an atom to account for the 
+arguable hydration shell, which is commonly assumed in the shaped based calculation 
 of hydrodynamic properties to make the calculation agree to the experimental
 measurements.
 
@@ -101,18 +103,19 @@ In BE2, these triangular faces or boundary elements are handled by a matrix
 of [3*face,3*face], thus it may take a long time to invert a large matrix.
 For the above ubiquitin example, inversion of a 23970 by 23970 matrix derived
 directly from MSMS outputs is not trivial and will take a very long time.
-So, it would be sensible to minimize the matrix size as long as the 
+So, it is sensible to minimize the matrix size as long as the 
 accuracy is not severely compromised.
 
-The appropriate number of faces or elements depends on the size and shape complexitiy of 
-the molecule of interest, but normally 800-2400 faces are good enough for most protein
-structures. However, best practice is to generate a series of surfaces with 
+The appropriate number of faces or boundary elements depends on the size and shape 
+complexitiy of the molecule of interest, 
+but normally 800-2400 faces are good enough for most protein structures. 
+However, best practice is to generate a series of surfaces with 
 varying number of faces and run each of them, and extrapolate the results
 to an infinite number of faces.
 
-**msms2gts** was written to serve this purpose. 
-It reads the MSMS outputs (.vert and .face files)
-and coarsens them and saves to a GTS output with a desired number of faces.
+**msms2gts** serves this purpose. 
+It reads and coarsens the MSMS outputs (.vert and .face files)
+and saves to a GTS output with a desired number of faces.
 
 ```
 $ msms2gts 1UBQ 800
@@ -122,11 +125,10 @@ $ ls 1UBQ.*
 
 ### Calculate diffusion tensors
 
-BE2 reads MSMS, GTS, or OFF format files and calculates translational and diffusion tensors.
+Running BE2 is very simple.
 
 ```
-$ be2 -gts 1UBQ > 1UBQ.0800.out
-$ cat 1UBQ.0800.out
+$ be2 -gts 1UBQ.0800
 Temperature  : 293.15 K
 Viscosity    : 1.002 cP
 GTS_surface  : 1UBQ.0800.gts (Vertex: 402 Edge: 1200 Face: 800)
@@ -149,6 +151,9 @@ Drr 3      4.009 |  5.618e-01  3.995e-01  7.244e-01
 
 ### Accuracy
 
+The accuracy of BE2 was verified with the rigid proteins and pure geometric objects 
+(not shown here).
+
 | PDB  | BE2 | Exp | PDB | BE2  | Exp  | PDB  |  BE2 |  Exp | PDB |  BE2  |  Exp  |
 |------|-----|-----|-----|------|------|------|------|------|-----|-------|-------|
 | 1ZNF | 2.0 | 2.4 |2CDS | 7.9  | 8.3  | 6I1B | 11.1 | 12.4 |1NWK | 25.2  | 24.5  |
@@ -165,23 +170,30 @@ Drr 3      4.009 |  5.618e-01  3.995e-01  7.244e-01
 How to run for the disordered proteins?
 =======================================
 
-The disordered or unstructured proteins have one or more part(s) or domain(s)
+The disordered or flexible or unstructured proteins have 
+one or more part(s) or domain(s)
 that remain unstable and are constantly changing their conformations 
-so that overall molecular shape fluctuates over time.
+such that overall molecular shape can fluctuate over time.
 
-BE2 approach focuses on one rigid domain at a time.
+Extending the classical boundary element method(BEM) applied to the rigid objects, 
+BE2 approach focuses on one rigid domain while regarding all the other parts of 
+a molecule as *environment* that is dragging motion in the solution.
 However, it does not mean that BE2 is limited to proteins with only one rigid domain. 
-For proteins with multiple rigid domains linked by some disordered linker(s), the 
-diffusion tensor of each rigid domain can be separately calculated.
-The rigid domain can be any size starting from just one residue. 
+For proteins with multiple rigid domains linked by some disordered or flexible linker(s), 
+the diffusion tensors can be calculated individually for each domain.
+It is also important to mention that the rigid domain can be any size. 
+For example, a completely disordered chain of amino acid can be also investigated with BE2
+by regarding one amino acid as the rigid domain at a time with the rest of amino acids being
+the *environment*.
 
-Since deposited PDB coordinates do not generally include the disordered 
-flexible domain(s), flexible domain(s) should be modeled while retaining the 
-structured domain(s). There are many ways to generate ensemble structures 
-including the molecular modeling toolkit (MMTK).
+Generally, deposited PDB coordinates do not include the disordered or 
+flexible domain(s). So, flexible domain(s) should be modeled while retaining the 
+structured domain(s) to generate ensemble structures. 
 
-A set of structures or ensemble describes the disordered proteins.
-You may use your own ensemble structures or use **```eg```** to generate one.
+You may use your own ensemble structures for BE2. 
+Otherwise, you can generate a template structure of the whole sequence including
+the disordered or flexible part(s) by using a modeling software such MMTK,
+then run **```eg```**  to sample the conformational space.
 
 ### Generate ensemble
 
@@ -199,8 +211,12 @@ The chi angles library was adopted from a published rotamer library.
 Residues immediately preceding proline were treated as an 
 additional amino acid type, due to the restricted local conformation.
 A generated ensemble structure is accepted only if
-the number of van der Waals clash and van der Waals energy is less than the
-given maxima. 
+the number of van der Waals clash and van der Waals energy 
+are below the given limits.
+
+Please note that the rigid domain in the generated pdb files will have  
+the same XYZ coordinates as the template pdb, which helps BE2 to relate
+the rigid domain surface and the ensemble structure surfaces. 
 
 ```
 $ eg
@@ -221,7 +237,8 @@ $ eg
     -quiet      be <quiet> do not print anything
 ```
 
-The mouse prion protein(89-230) ensemble structures can be generated as:
+The mouse prion protein(89-230) ensemble structures can be generated 
+using the following *rlist* (rotation list) file.
 
 ```
 $ cat rlist-prp
@@ -241,6 +258,7 @@ A 227 C
 A 228 C
 A 229 C
 A 230 C
+
 $ eg -i MoPrP89-230.pdb -d A 127 224 -r rlist-prp \
      -l ~/bin/eglib/fycqr.lib -o prp 1 1000 -maxc 20 -maxE 5000 -rlist -pdb
 # library: /home/shbae/bin/eglib/fycqr.lib (21190)
@@ -251,29 +269,35 @@ $ eg -i MoPrP89-230.pdb -d A 127 224 -r rlist-prp \
 ```
 
 The *rlist* file defines which residue to be randomly sampled for 
-phi, psi and chi dihedral angles from the library, and which part
-(N- or C-terminal from the defined residue) is to be rotated to satisfy
-the phi, psi backbone dihedral angles.
+a set of phi, psi and chi dihedral angles, and which part
+(N- or C-terminal from the residue) is to be rotated to 
+make the selected phi, psi backbone dihedral angles.
 For example, ```A 124 N``` means that phi,psi,chi dihedral angles are 
 to be sampled and applied to the residue 124 by rotating residues 89-123.
 Likewise, ```A 227 C``` means that dihedral angles are to be sampled 
 and applied to the residue 227 by rotating residues 278-230.
+As you might notice, all the residues before the rigid domain of interest should
+be ```N``` and all the residues after the rigid domain of interest should 
+be ```C```. This notation is necessary to define the *rigid domain of interest*
+for proteins containing multiple rigid domains.
 
-**eg** output shows the number of clashes and van der Waals energy of 
-the template pdb file. You may adjust the maximum number of 
-clashes and maximum van der Waals energy by ```-maxc``` and ```-maxE```.
-If they are set too low, it will take long time for **eg** to generate
-a desired number of ensemble structures that satisfy the criteria.
+**eg** output shows the number of van der Waals clashes and 
+van der Waals energy of the template pdb file. Any ensemble structure generated
+by **eg** will have at least this number of clashes and this level of van der Waals energy
+because coordinates of the rigid domain do not change in the ensemble structures.
+You may adjust the maximum number of van der Waals clashes and 
+maximum van der Waals energy by ```-maxc``` and ```-maxE```.
+If these limits are set too low or the template ensemble structure is poorly defined, 
+that is, junctions connecting rigid and disordered parts have constant clashes,
+it will take long for **eg** to generate a desired number of ensemble structures 
+that satisfy the criteria.
 
 The above example would generate ```prp_0001.rot```,```prp_0001.pdb```,...,
-```prp_1000.rot```,```prp_1000.pdb```. *.rot* files contain selected
-dihedral angles. In order to save disk space, you may delete the *.pdb* files
-and keep only the *.rot* files. 
-You can rebuild the *.pdb* files using the *.rot* files.
+```prp_1000.rot```,```prp_1000.pdb```. 
 
-Please note that in the generated pdb files the rigid domain will have  
-the same XYZ coordinates as the template pdb, which helps BE2 to relate
-the rigid domain surface and the ensemble structure surfaces. 
+*.rot* files contain selected dihedral angles. 
+In order to save disk space, you may delete the *.pdb* files and keep only the *.rot* files. 
+You can rebuild the *.pdb* files using the *.rot* files and the initial template without any loss.
 
 ```
 $ eg -i MoPrP89-230.pdb -r prp_0001.rot -rebuild
@@ -286,10 +310,11 @@ You need two sets of molecular surfaces or boundary elements: a static surface
 for the rigid domain and an instantaneous surface for a snapshot of an ensemble structure.
 The static surface serves as a reference boundary to which the instantaneous surface is
 related to calculate the *velocity correlation*.
-The static surface matrix does not undergo an inverse operation, so coarsening is not necessary.
-In the mouse Prion(89-230), residues 127-224 can be safely assumed as rigid thus 
-a static surface for residues 127-224 and a series of 
-instantaneous surfaces for the whole molecule, residues 89-230, will be generated.
+A matrix for the static surface does not undergo an inverse operation, 
+so coarsening is not necessary.
+In the mouse Prion(89-230), residues 127-224 can be assumed as rigid.
+Thus a static surface is generated for the residues 127-224 and a series of 
+instantaneous surfaces are generated for the whole molecule, the residues 89-230.
 
 #### Static surface
 
@@ -309,7 +334,7 @@ $ msms.i86Linux2.2.6.1 -density 1 -if prp_0001.xyzr -of prp_0001 >& msms.log
 $ msms2gts prp_0001 800
 ```
 
-An instantaneous surface is genereated for each ensemble structure with proper coarsening.
+A coarsened instantaneous surface is genereated for each ensemble structure.
 
 ### Calculate diffusion tensors
 
@@ -339,8 +364,8 @@ Drr 3      1.353 |  4.604e-01  8.867e-01  4.244e-02
 # gamma 6 eps 22 1/(6Diso)  15.186 ns
 ```
 
-For example, 10 ensemble structures would result in a range of 
-rotational correlation times (1/(6Diso)).
+If you run BE2 for 10 different structures in an ensemble,
+they would result in a range of rotational correlation times (1/(6Diso)).
 
 ```
 $ grep Diso prp_*.out
@@ -358,18 +383,16 @@ prp_0010.out:# gamma 6 eps 22 1/(6Diso)  12.661 ns
 
 For the mouse Prion(89-230), the experimental rotational correlation
 time (1/(6Diso)) or tauc is 13.4 ns at standard condition (20 deg. C). 
-Even with only 10 structures, averaged tauc is pretty close to the experimental value.
+Even for 10 structures, averaged tauc is pretty close to the experimental value.
 However, a large number of ensemble structures are required for more
-reliably prediction. In the mouse Prion(89-230), it was found that 
-averaging of about 1000 or more ensemble structures leads to 
-practical convergency at which fluctuation of 1/(6Diso) 
-is less than 0.2 ns.
+reproducible prediction. In the mouse Prion(89-230), it was found that 
+averaging of about 1000-2000 ensemble structures leads to 
+practical convergency at which tauc fluctuation is less than 0.2 ns.
 
 ### Temperature and viscosity
 
 Hydrodynamic properties such as the translational and rotational 
-diffusion tensors depend on the solution
-temperature and viscosity. 
+diffusion tensors depend on the solution temperature and viscosity. 
 These parameters can be specified by ```-t``` and ```-v``` options in **BE2**. 
 By default, temperature is 293.13 K or 20 deg. C and viscosity is 1.002 cP.
 A tauc value measured at different temperature can be converted to
@@ -391,7 +414,7 @@ for ($C=15; $C < 40; $C++)
 **Convert tauc to the standard condition (water, 20 deg.C)**
 ```
 #!/usr/bin/perl
-# ex. conversion tauc=8.4 at 25 deg.C to the standard condition
+# ex. conversion of tauc=8.4 at 25 deg.C to the standard condition
 $tc = 8.4;
 $C = 25.0;
 $K = $C + 273.15;
@@ -400,9 +423,13 @@ $v_= 2.414e-2*exp(247.8/(293.15-140.0)*log(10));
 printf("tc: %f at %f C %f K --> tc: %f at 20 C\n",$tc,$C,$K,$tc*$K/293.15*$v_/$v);
 ```
 
-### Comparison to the Stokes-Einstein estimation
+### Comparison to the Stokes-Einstein estimation and false rigid assumption
 
-BE2 results can be compared with the tauc estimated from the Stokes-Einstein equation.
+For comparison, tauc can be estimated from the Stokes-Einstein equation
+or tauc can be predicted following the above rigid BE2 method
+with a false assumption of each structure in the ensemble being rigid.
+
+**Stokes-Einstein estimation**
 
 ```
 #!/usr/bin/perl
