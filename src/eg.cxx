@@ -54,7 +54,7 @@ int main (int argc, char *argv[])
     init_fyc_lib (fyc);
 
     /* default setting */
-    strcpy (file_lib, "./fycqr.lib");
+    strcpy (file_lib, "./fycqr");
     strcpy (file_rot, "./rlist");
     strcpy (o_prefix, "e");
     max_allowed_clash	= 0;
@@ -235,7 +235,7 @@ void usage ()
   printf("    -i #        read <i>nput PDB file\n");
   printf("    -d # # #    rigid <d>omain [chainId begin end]\n");
   printf("    -r #        read <r>otation list (default= rlist)\n");
-  printf("    -l #        import <l>ibrary (default= fycqr.lib)\n");
+  printf("    -l #        import <l>ibrary (default= fycqr)\n");
   printf("    -o # # #    <o>utput [prefix begin end]\n");
   printf("    -maxc #     <max>imum allowed <c>lashes (default= 0)\n");
   printf("    -maxE #     <max>imum allowed VDW <e>nergy (default= 10000)\n");

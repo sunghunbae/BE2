@@ -30,7 +30,6 @@ SET (eg 	src/eg.cxx
 		src/rotate.cxx
 		src/clash.cxx
 		src/pdb.cxx 	)
-SET (data	data/fycqr.lib	)
 
 ADD_EXECUTABLE (be2	${be2}		)
 ADD_EXECUTABLE (eg	${eg}  		)
@@ -52,5 +51,5 @@ INSTALL (TARGETS msms2gts
 	DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/eglib)
-INSTALL (PROGRAMS  ${data}
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/eglib)
+INSTALL (PROGRAMS  ${BE2_SOURCE_DIR}/src/fycqr
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/eglib )
