@@ -46,11 +46,17 @@ $ cd build
 $ cmake ..
 $ make
 $ make install
+
+### Installed files
+
 ```
-By default, an executable binary files (**```be2```**,**```msms2gts```**,**```eg```**) and 
-a data file ```fycqr.lib``` will be installed at ```~/bin``` 
-and ```~/bin/eglib``` directories, respectively. 
+~/bin/be2
+~/bin/msms2gts
+~/bin/eg
+~/bin/eglib/fycqr
+```
 You may change the destination directory defined the CMakeLists.txt file :
+
 ```
 SET(CMAKE_INSTALL_PREFIX ~/bin )
 ```
