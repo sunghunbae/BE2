@@ -265,10 +265,10 @@ void dihedrot (vector <ATOM> & coor, const struct rot &R)
 
 
 void get_sequence (const vector <ATOM> &coor,
-  const char chainId, const size_t resSeq, string &resName)
+  const char chainId, const unsigned int resSeq, string &resName)
 {
   resName = "";
-  for (size_t i=0; i< coor.size(); i++) {
+  for (unsigned int i=0; i< coor.size(); i++) {
     if (coor[i].chainId == chainId && coor[i].resSeq == resSeq) {
       resName = coor[i].resName;
       break;
@@ -277,9 +277,9 @@ void get_sequence (const vector <ATOM> &coor,
 }
 
 void get_vector (const vector <ATOM> &coor,
-  char chainId, size_t resSeq, string p, Vector &a)
+  char chainId, unsigned int resSeq, string p, Vector &a)
 {
-    for (size_t i=0; i< coor.size(); i++) {
+    for (unsigned int i=0; i< coor.size(); i++) {
 	if (coor[i].chainId == chainId && 
 	    coor[i].resSeq == resSeq && coor[i].name_ == p) {
 	    a.x = coor[i].x;

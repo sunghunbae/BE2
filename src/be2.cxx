@@ -83,10 +83,10 @@ vector < char > Rchain;
 vector < int > RNter,RCter;
 
 
-size_t read_msms_surface (const char *prefix, gsl_matrix *f);
-size_t read_gts_surface (const char *prefix, gsl_matrix *f);
-size_t read_geom_surface (const char *prefix, gsl_matrix *f);
-size_t read_pdb_coor (const char *prefix, vector <Atom> & coor);
+unsigned int read_msms_surface (const char *prefix, gsl_matrix *f);
+unsigned int read_gts_surface (const char *prefix, gsl_matrix *f);
+unsigned int read_geom_surface (const char *prefix, gsl_matrix *f);
+unsigned int read_pdb_coor (const char *prefix, vector <Atom> & coor);
 void write_geom_surface (const char *prefix, gsl_matrix *f,
     gsl_vector *vf, int color_scheme);
 void calc_friction_tensor ( gsl_matrix *G_inv, gsl_matrix *C,
@@ -113,7 +113,7 @@ double dyyyg0 (double y, void * params);
 double dyg1 (double y, void * params);
 double dyyg1 (double y, void * params);
 double dxxxg2 (double x, void * params);
-void integ_err (size_t k,size_t j,scalar_product &); 
+void integ_err (unsigned int k,unsigned int j,scalar_product &); 
 
 void block_inv   (gsl_matrix *G, gsl_matrix *G_inv);
 void block_inv_2 (gsl_matrix *G, gsl_matrix *G_inv);
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
   extern double temperature, viscosity, epsilon, gboundary;
   extern bool verb;
 
-  size_t N,NR,M,i,j,k,u,v,delta; 
+  unsigned int N,NR,M,i,j,k,u,v,delta; 
   int signum,status;
   double A[3],l[3],h[3],SI[3],CI[3];
   double a,b,c,r0,sc,cc,dp,cosA,ln;
@@ -199,14 +199,14 @@ int main(int argc, char *argv[])
   vector < Atom > coor;
 
   N = 0;
-  size_t dS_format = _GTS_FORMAT_;
+  unsigned int dS_format = _GTS_FORMAT_;
   bool dR_flag = false;
   bool coor_flag = false;
 
   if (argc < 2) usage();
 
   i = 1;
-  while (i < (size_t)argc) {
+  while (i < (unsigned int)argc) {
     if (strcmp(argv[i],"-help") == 0 || strcmp(argv[i],"-h") == 0) 
       usage();
     if (strcmp(argv[i],"-gts" ) == 0) {
@@ -304,7 +304,7 @@ int main(int argc, char *argv[])
   /* read pdb coordiantes */
   if (coor_flag) {
     M = read_pdb_coor (pdb_file_prefix, coor);
-    printf ("PDB coord.   : %s.pdb (Atoms: %d)\n",pdb_file_prefix,M);
+    printf ("PDB coord.   : %s.pdb (Atoms: %lu)\n",pdb_file_prefix,M);
     if (0) {
       for (j=0;j<M;j++) {
 	printf ("%5d %3s %4d %4s %8.3f %8.3f %8.3f\n",
@@ -911,7 +911,7 @@ void calc_friction_tensor (
   gsl_matrix *Krt,
   gsl_matrix *Krr) 
 {
-  size_t j,k,N = dS->size;
+  unsigned int j,k,N = dS->size;
   double x,y,z,vfk;
   gsl_matrix *rjX  = gsl_matrix_alloc (3,3);
   gsl_matrix *rkX  = gsl_matrix_alloc (3,3);
@@ -1073,10 +1073,10 @@ void calc_center_of_diffusion (gsl_matrix *Drr,gsl_matrix *Dtr,gsl_vector *OR)
 /* 	
   read MSMS .vert and .face files 
 */
-size_t read_msms_surface (const char *prefix, gsl_matrix *f) 
+unsigned int read_msms_surface (const char *prefix, gsl_matrix *f) 
 {
   char line[MAXLENGTH],vert[MAXLENGTH],face[MAXLENGTH];
-  size_t l,v1,v2,v3,vi,fi,nv,nf;
+  unsigned int l,v1,v2,v3,vi,fi,nv,nf;
   double x,y,z;
   gsl_matrix *v;
 
@@ -1151,11 +1151,11 @@ size_t read_msms_surface (const char *prefix, gsl_matrix *f)
   read GTS surface 
 */
 
-size_t read_gts_surface (const char *prefix, gsl_matrix *f) 
+unsigned int read_gts_surface (const char *prefix, gsl_matrix *f) 
 {
   char line[MAXLENGTH], gts[MAXLENGTH];
-  size_t l,v1,v2,vi,ei,fi,nv,ne,nf;
-  size_t i,j,k,imax,eidx[3],vidx[3];
+  unsigned int l,v1,v2,vi,ei,fi,nv,ne,nf;
+  unsigned int i,j,k,imax,eidx[3],vidx[3];
   double x,y,z;
   gsl_matrix *v,*e;
 
@@ -1242,10 +1242,10 @@ size_t read_gts_surface (const char *prefix, gsl_matrix *f)
   read GeomView surface  (OFF format)
 */
 
-size_t read_geom_surface (const char *prefix, gsl_matrix *f) 
+unsigned int read_geom_surface (const char *prefix, gsl_matrix *f) 
 {
   char line[MAXLENGTH],dummy[MAXLENGTH],off[MAXLENGTH];
-  size_t l,v1,v2,v3,vi,fi,nv,ne,nf,dim;
+  unsigned int l,v1,v2,v3,vi,fi,nv,ne,nf,dim;
   double x,y,z;
   gsl_matrix *v;
 
@@ -1316,7 +1316,7 @@ void write_geom_surface (const char *prefix, gsl_matrix *f, gsl_vector *vf,
   int color_scheme) 
 {
   char off[MAXLENGTH];
-  size_t N,fi;
+  unsigned int N,fi;
   double color_r,color_g,color_b,color_a;
 
   sprintf(off,"%s.%d-%d.off",prefix,(int)gboundary,(int)epsilon);
@@ -1380,7 +1380,7 @@ void write_geom_surface (const char *prefix, gsl_matrix *f, gsl_vector *vf,
   geom_file.close();
 }
 
-size_t read_pdb_coor (const char *prefix, vector <Atom> & coor)
+unsigned int read_pdb_coor (const char *prefix, vector <Atom> & coor)
 {
   char filename[MAXLENGTH];
   char line[MAXLENGTH];
@@ -1519,7 +1519,7 @@ void calc_surf_geometry (
     gsl_matrix *Length,
     gsl_vector *Area)
 {
-  size_t k;
+  unsigned int k;
   double a,b,c,s;
   gsl_vector_view v1,v2,v3,va,vb,vc,vk,sk,ck;
 
@@ -1584,7 +1584,7 @@ void calc_velocity_factor (gsl_matrix *C,Attrib & dSa,gsl_vector *vf)
   gsl_histogram_set_ranges (h, range_h, 11);
 
   double d,dmin,lower,upper;
-  size_t k;
+  unsigned int k;
 
   for (k=0;k<C->size1;k++) {
     dmin = dSa.d[k];
@@ -1667,7 +1667,7 @@ void calc_dimension (gsl_matrix *Vert)
   printf("Dimension    : X %9.4f  Y %9.4f Z %9.4f\n",dim_x,dim_y,dim_z);
 }
 
-void integ_err (size_t k,size_t j,scalar_product &D) 
+void integ_err (unsigned int k,unsigned int j,scalar_product &D) 
 {
   fprintf(stderr,"integration error at k=%d j=%d\n",k,j);
   fprintf(stderr,"ad1:%g ad2:%g ac:%g ab:%g bc:%g\n",
@@ -1696,7 +1696,7 @@ void calc_attrib (gsl_matrix *C, gsl_matrix *RC,vector <Atom> & coor,
 
   gsl_vector *dist = gsl_vector_alloc (3);
   gsl_vector_view ck,cr;
-  size_t k,r;
+  unsigned int k,r;
   double d, dmin;
 
   /* 
@@ -1744,7 +1744,7 @@ void calc_attrib (gsl_matrix *C, gsl_matrix *RC,vector <Atom> & coor,
   vector <char> chainlist;
   char chain;
   int resid, maxfreq, anchor_n, anchor_c;
-  size_t i,c,p,neighbor;
+  unsigned int i,c,p,neighbor;
 
   // COMMON for ALGORITHMS 2 and 3
   // connect an element to a specific residue
@@ -1954,8 +1954,8 @@ void calc_attrib (gsl_matrix *C, gsl_matrix *RC,vector <Atom> & coor,
 
 void block_inv (gsl_matrix *G, gsl_matrix *G_inv)
 {
-  size_t m = (size_t)(G->size1*0.5); 
-  size_t n = G->size1 - m;
+  unsigned int m = (unsigned int)(G->size1*0.5); 
+  unsigned int n = G->size1 - m;
   gsl_matrix *block_A = gsl_matrix_alloc (m,m); // block A 
   gsl_matrix *Schur_A = gsl_matrix_alloc (n,n); // Schur complement of A
   gsl_matrix_view GA,GB,GC,GD,GiA,GiB,GiC,GiD;
@@ -2006,8 +2006,8 @@ void block_inv (gsl_matrix *G, gsl_matrix *G_inv)
 
 void block_inv_2 (gsl_matrix *G, gsl_matrix *G_inv)
 {
-  size_t m = (size_t)(G->size1*0.5); 
-  size_t n = G->size1 - m;
+  unsigned int m = (unsigned int)(G->size1*0.5); 
+  unsigned int n = G->size1 - m;
   gsl_matrix *block_A = gsl_matrix_alloc (m,m); // block A 
   gsl_matrix *Schur_A = gsl_matrix_alloc (n,n); // Schur complement of A
   gsl_matrix_view GA,GB,GC,GD,GiA,GiB,GiC,GiD;
@@ -2058,8 +2058,8 @@ void block_inv_2 (gsl_matrix *G, gsl_matrix *G_inv)
 
 void block_inv_3 (gsl_matrix *G, gsl_matrix *G_inv)
 {
-  size_t m = (size_t)(G->size1*0.5); 
-  size_t n = G->size1 - m;
+  unsigned int m = (unsigned int)(G->size1*0.5); 
+  unsigned int n = G->size1 - m;
   gsl_matrix *block_A = gsl_matrix_alloc (m,m); // block A 
   gsl_matrix *Schur_A = gsl_matrix_alloc (n,n); // Schur complement of A
   gsl_matrix_view GA,GB,GC,GD,GiA,GiB,GiC,GiD;
@@ -2110,8 +2110,8 @@ void block_inv_3 (gsl_matrix *G, gsl_matrix *G_inv)
 
 void block_inv_4 (gsl_matrix *G, gsl_matrix *G_inv)
 {
-  size_t m = (size_t)(G->size1*0.5); 
-  size_t n = G->size1 - m;
+  unsigned int m = (unsigned int)(G->size1*0.5); 
+  unsigned int n = G->size1 - m;
   gsl_permutation *qm = gsl_permutation_alloc (m);
   gsl_permutation *qn = gsl_permutation_alloc (n);
   gsl_matrix *block_A = gsl_matrix_alloc (m,m); // block A 

@@ -11,7 +11,7 @@ using namespace std;
 //
 
 typedef struct {
-    size_t  serial, resSeq;
+    unsigned int  serial, resSeq;
     string  name, resName, segID, element, charge;
     char    altLoc, chainId, iCode;
     double  x, y, z, occupancy, tempFactor;
@@ -24,7 +24,7 @@ typedef struct {
     double  charge_;
     } ATOM;
 
-size_t	read_PDB (const char *file, vector <ATOM> & coor);
+unsigned int	read_PDB (const char *file, vector <ATOM> & coor);
 void	write_PDB (const char *prefix, const vector <ATOM> &coor, 
 	    const int idx, const int num_clash, const double Evdw);
 void	write_PQR (const char *prefix, const vector <ATOM> &coor, 

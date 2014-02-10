@@ -149,8 +149,8 @@ int main (int argc, char *argv[])
     // rebuild pdb from rotation list output (i.e. prefix_####.rot)
     if (_rebuild) {
 	string str = string(file_rot);
-	size_t found1 = str.find_last_of ("_");
-	size_t found2 = str.find_last_of (".");
+	unsigned int found1 = str.find_last_of ("_");
+	unsigned int found2 = str.find_last_of (".");
 	string prefix = str.substr(0,found1);
 	string number = str.substr(found1+1,found2);
 	sscanf (prefix.c_str(),"%s",o_prefix);

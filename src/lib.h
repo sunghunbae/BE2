@@ -10,7 +10,7 @@ struct lib {
 
 struct rot {
     char chain;
-    size_t resid;
+    unsigned int resid;
     char rotation;
     bool library_search;
     string seq, dihed[6];
@@ -28,8 +28,8 @@ struct ff {
   };
 
 void	init_fyc_lib (vector < struct lib > &);
-size_t	read_FYCQR (const char *, vector < struct lib > &,
+unsigned int	read_FYCQR (const char *, vector < struct lib > &,
 	vector < struct ff > &);
-size_t	parse (const char *line, const char *delimit, vector <string> &c);
+unsigned int	parse (const char *line, const char *delimit, vector <string> &c);
 
 #endif

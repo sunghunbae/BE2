@@ -9,11 +9,11 @@ using namespace std;
 #include "pdb.h"
 #include "lib.h"
 
-size_t read_PDB (const char *filename, vector <ATOM> & coor)
+unsigned int read_PDB (const char *filename, vector <ATOM> & coor)
 {
   char line [128];
   string s,temp,temp_;
-  size_t c;
+  unsigned int c;
 
   ifstream pdb_file (filename);
   if (pdb_file.fail()) {

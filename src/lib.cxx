@@ -41,7 +41,7 @@ void init_fyc_lib (vector < struct lib > & fyc)
     r.seq = "PRO"; fyc.push_back (r); // 19
 }
 
-size_t read_FYCQR (const char *file, 
+unsigned int read_FYCQR (const char *file, 
     vector < struct lib > & fyc, vector < struct ff > & qr) 
 {
     vector < string > c;
@@ -111,7 +111,7 @@ size_t read_FYCQR (const char *file,
     return n;
 }
 
-size_t parse (const char *line, const char *delimit, vector <string> &c)
+unsigned int parse (const char *line, const char *delimit, vector <string> &c)
 {
   char work[strlen(line)],*token;
   bool comment = false;

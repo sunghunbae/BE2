@@ -25,9 +25,9 @@ void	rotate (vector <ATOM> &coor, vector <struct rot> &R,
 	vector <struct lib> &fyc);
 void	dihedrot (vector <ATOM> &, const struct rot &);
 void	get_sequence (const vector <ATOM> & coor,
-        const char chainId, const size_t resSeq, string &);
+        const char chainId, const unsigned int resSeq, string &);
 void	get_vector (const vector <ATOM> & coor,
-        char chainId, size_t resSeq, string p, Vector &a);
+        char chainId, unsigned int resSeq, string p, Vector &a);
 
 int	RotateAtom_ (ATOM &, Vector *v1, Vector *v2, double angle);
 double	Dihedral_ (Vector *a, Vector *b, Vector *c, Vector *d);
