@@ -304,7 +304,7 @@ int main(int argc, char *argv[])
   /* read pdb coordiantes */
   if (coor_flag) {
     M = read_pdb_coor (pdb_file_prefix, coor);
-    printf ("PDB coord.   : %s.pdb (Atoms: %lu)\n",pdb_file_prefix,M);
+    printf ("PDB coord.   : %s.pdb (Atoms: %u)\n",pdb_file_prefix,M);
     if (0) {
       for (j=0;j<M;j++) {
 	printf ("%5d %3s %4d %4s %8.3f %8.3f %8.3f\n",
