@@ -13,7 +13,7 @@ unsigned int read_PDB (const char *filename, vector <ATOM> & coor)
 {
   char line [128];
   string s,temp,temp_;
-  unsigned int c;
+  size_t c;
 
   ifstream pdb_file (filename);
   if (pdb_file.fail()) {
